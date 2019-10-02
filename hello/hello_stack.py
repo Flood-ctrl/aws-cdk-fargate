@@ -2,6 +2,7 @@ from aws_cdk import (
     core,
     aws_ec2 as ec2,
     aws_ecs as ecs,
+    aws_logs as logs,
     aws_elasticloadbalancingv2 as elbv2,
 )
 
@@ -67,6 +68,7 @@ class FargateApp(core.Stack):
             task_definition=task_definition,
             logging=ecs.AwsLogDriver(
                 stream_prefix="DemoContainerLogs",
+                log_retention=logs.RetentionDays.ONE_DAY,
             ),
         )
 
