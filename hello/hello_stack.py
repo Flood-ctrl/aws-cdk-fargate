@@ -6,6 +6,7 @@ from aws_cdk import (
     aws_elasticloadbalancingv2 as elbv2,
 )
 
+http_port = 80
 
 class FargateApp(core.Stack):
 
@@ -36,7 +37,7 @@ class FargateApp(core.Stack):
 
         app_target_group = elbv2.ApplicationTargetGroup(
             self, "AppTargetGroup",
-            port=80,
+            port=http_port,
             vpc=vpc,
             target_type=elbv2.TargetType.IP,
         )
@@ -51,7 +52,7 @@ class FargateApp(core.Stack):
         app_listener = elbv2.ApplicationListener(
             self, "AppListener",
             load_balancer=elastic_loadbalancer,
-            port=80,
+            port=http_port,
             default_target_groups=[app_target_group],
         )
 
@@ -74,7 +75,7 @@ class FargateApp(core.Stack):
 
         container_defenition.add_port_mappings(
             ecs.PortMapping(
-                container_port=80,
+                container_port=http_port,
             )
         )
 
