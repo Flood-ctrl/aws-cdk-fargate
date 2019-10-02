@@ -7,6 +7,8 @@ from aws_cdk import (
 )
 
 http_port = 80
+task_def_cpu = "256"
+task_def_memory_mb = "512"
 
 class FargateApp(core.Stack):
 
@@ -59,8 +61,8 @@ class FargateApp(core.Stack):
         task_definition = ecs.TaskDefinition(
             self, "TaskDefenition",
             compatibility=ecs.Compatibility.FARGATE,
-            cpu="256",
-            memory_mib="512",
+            cpu=task_def_cpu,
+            memory_mib=task_def_memory_mb,
         )
 
         container_defenition = ecs.ContainerDefinition(
