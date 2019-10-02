@@ -33,11 +33,6 @@ class MyStack(core.Stack):
             description="Allow all traffic"
         )
 
-        # security_group.add_ingress_rule(
-        #     ec2.Peer.any_ipv4(), 
-        #     ec2.Port.all_tcp(),
-        # )
-
         app_target_group = elbv2.ApplicationTargetGroup(
             self, "AppTargetGroup",
             port=80,
@@ -59,8 +54,6 @@ class MyStack(core.Stack):
             default_target_groups=[app_target_group],
         )
 
-        #elastic_loadbalancer.add_listener(app_listener)
-
         task_definition = ecs.TaskDefinition(
             self, "TaskDefenition",
             compatibility=ecs.Compatibility.FARGATE,
@@ -73,19 +66,12 @@ class MyStack(core.Stack):
             image=ecs.ContainerImage.from_registry("vulnerables/web-dvwa"),
             task_definition=task_definition,
         )
-        
+
         container_defenition.add_port_mappings(
             ecs.PortMapping(
                 container_port=80,
             )
         )
-
-        #container_defenition.container_port(80)
-
-        # task_definition.add_container(
-        #     "DemoContainer",
-        #     image=ecs.ContainerImage.from_registry("amazon/amazon-ecs-sample"),
-        # )
 
         fargate_service = ecs.FargateService(
             self, "FargateService",
@@ -93,7 +79,7 @@ class MyStack(core.Stack):
             cluster=cluster,
             security_group=security_group,
         )
-        
+
         fargate_service.attach_to_application_target_group(
             target_group=app_target_group,
         )
