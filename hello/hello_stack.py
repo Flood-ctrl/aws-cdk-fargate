@@ -65,6 +65,9 @@ class FargateApp(core.Stack):
             self, "ContainerDefenition",
             image=ecs.ContainerImage.from_registry("vulnerables/web-dvwa"),
             task_definition=task_definition,
+            logging=ecs.AwsLogDriver(
+                stream_prefix="DemoContainerLogs",
+            ),
         )
 
         container_defenition.add_port_mappings(
