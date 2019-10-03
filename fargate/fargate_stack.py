@@ -91,3 +91,8 @@ class FargateApp(core.Stack):
         fargate_service.attach_to_application_target_group(
             target_group=app_target_group,
         )
+
+        core.CfnOutput(
+        self, "LoadBalancerDNS",
+        value=elastic_loadbalancer.load_balancer_dns_name
+        )
