@@ -6,6 +6,9 @@ from aws_cdk import (
     aws_elasticloadbalancingv2 as elbv2,
 )
 
+http_port = 80
+task_def_cpu = "256"
+task_def_memory_mb = "512"
 
 class FargateApp(core.Stack):
 
@@ -36,7 +39,7 @@ class FargateApp(core.Stack):
 
         app_target_group = elbv2.ApplicationTargetGroup(
             self, "AppTargetGroup",
-            port=80,
+            port=http_port,
             vpc=vpc,
             target_type=elbv2.TargetType.IP,
         )
@@ -51,15 +54,15 @@ class FargateApp(core.Stack):
         app_listener = elbv2.ApplicationListener(
             self, "AppListener",
             load_balancer=elastic_loadbalancer,
-            port=80,
+            port=http_port,
             default_target_groups=[app_target_group],
         )
 
         task_definition = ecs.TaskDefinition(
             self, "TaskDefenition",
             compatibility=ecs.Compatibility.FARGATE,
-            cpu="256",
-            memory_mib="512",
+            cpu=task_def_cpu,
+            memory_mib=task_def_memory_mb,
         )
 
         container_defenition = ecs.ContainerDefinition(
@@ -74,7 +77,7 @@ class FargateApp(core.Stack):
 
         container_defenition.add_port_mappings(
             ecs.PortMapping(
-                container_port=80,
+                container_port=http_port,
             )
         )
 
@@ -87,4 +90,9 @@ class FargateApp(core.Stack):
 
         fargate_service.attach_to_application_target_group(
             target_group=app_target_group,
+        )
+
+        core.CfnOutput(
+        self, "LoadBalancerDNS",
+        value=elastic_loadbalancer.load_balancer_dns_name
         )
